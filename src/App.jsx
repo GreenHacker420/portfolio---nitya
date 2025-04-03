@@ -6,6 +6,8 @@ import game from './assets/images/game.png';
 import blog from './assets/images/blog.png';
 import nitya from './assets/images/nitya.jpeg';
 import bird from './assets/images/bird.png';
+import { InteractiveHoverButton } from "../src/component/button.jsx";
+
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -66,8 +68,8 @@ function App() {
               >
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
               </button>
-              <a href="#contact" className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white transition-colors`}>
-                Contact
+              <a href="#contact">
+              <InteractiveHoverButton>Contact</InteractiveHoverButton>
               </a>
             </div>
           </div>
@@ -202,7 +204,7 @@ function App() {
             I'm always open to discussing new projects and opportunities.
           </p>
           <a
-            href="mailto:contact@example.com"
+            href="mailto:nitya@curiouscoder.live"
             className={`inline-flex items-center px-6 py-3 rounded-lg ${
               darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'
             } text-white transition-colors`}
@@ -217,7 +219,7 @@ function App() {
       <footer className={`py-8 ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
-            © {new Date().getFullYear()} Your Name. All rights reserved.
+            © {new Date().getFullYear()} Nitya Jain. All rights reserved.
           </p>
         </div>
       </footer>
