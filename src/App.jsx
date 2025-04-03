@@ -5,6 +5,7 @@ import login from './assets/images/login.png';
 import game from './assets/images/game.png';
 import blog from './assets/images/blog.png';
 import nitya from './assets/images/nitya.jpeg';
+import bird from './assets/images/bird.png';
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -41,6 +42,13 @@ function App() {
       image: blog,
       tags: ["React", "javascript", "tailwind CSS"],
       link: "https://blog.curiouscoder.live/"
+    },
+    {
+      title: "Flappy Bird",
+      description: "A simple Flappy Bird game created using React and CSS, featuring smooth animations, dynamic obstacles, and score tracking. 🚀 Check it out!",
+      image: bird,
+      tags: ["React", "javascript", "CSS"],
+      link: "https://flappybirdgame2025.netlify.app/"
     }
   ];
 
