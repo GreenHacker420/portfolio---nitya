@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Github, Linkedin, Mail, ChevronDown, ExternalLink, Moon, Sun } from 'lucide-react';
-
+import grwmImage from './assets/images/grwm.png';
+import login from './assets/images/login.png';
+import game from './assets/images/game.png';
+import blog from './assets/images/blog.png';
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -11,25 +14,32 @@ function App() {
 
   const projects = [
     {
-      title: "E-Commerce Platform",
-      description: "A full-stack e-commerce solution with real-time inventory management",
-      image: "https://images.unsplash.com/photo-1661956602116-aa6865609028?auto=format&fit=crop&q=80&w=800",
-      tags: ["HTML", "javascript", "CSS"],
+      title: "Get Ready With Me",
+      description: "The one stop place to get a customised Drip - A fashion design platform",
+      image: grwmImage,
+      tags: ["HTML", "CSS", "javascript"],
       link: "https://atharvgit2005.github.io/DIY-fashion-design/"
     },
     {
-      title: "basic login page",
-      description: "Smart task management app with AI-powered prioritization",
-      image: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?auto=format&fit=crop&q=80&w=800",
-      tags: ["HTML", "CSS"],
+      title: "Basic login page",
+      description: "Nothing fancy, just a ridiculously simple login page made with HTML and CSS—because even hackers need a place to log in! 😆😅",
+      image: login,
+      tags: ["HTML", "javascript", "CSS"],
       link: "https://tubular-fenglisu-c83842.netlify.app/"
     },
     {
       title: "DRIFT RUN",
-      description: "Adventerous car game ",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+      description: "Adventerous car rougelike  game made using unity and C# ",
+      image: game,
       tags: ["unity", "C#"],
       link: "https://curiouscoder.itch.io/driftrun-rougelike"
+    },
+    {
+      title: "Blog Website",
+      description: "A blog website :a one stop soluton to all blogs posts :made with react javascript and tailwind CSS",
+      image: blog,
+      tags: ["React", "javascript", "tailwind CSS"],
+      link: "https://blog.curiouscoder.live/"
     }
   ];
 
@@ -73,7 +83,7 @@ function App() {
             Passionate programmer, Aspiring Full Stack Developer and Game developer
           </h2>
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8">
-          Passionate programmer who loves building websites, apps, and games. Aspiring full-stack and game developer, eager to create innovative and user-friendly projects.
+            Passionate programmer who loves building websites, apps, and games. Aspiring full-stack and game developer, eager to create innovative and user-friendly projects.
           </p>
           <div className="flex space-x-4">
             <a href="https://github.com/curiouscoder-cmd" target="_blank" rel="noopener noreferrer">
