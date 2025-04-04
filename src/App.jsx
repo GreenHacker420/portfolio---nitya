@@ -68,8 +68,13 @@ function App() {
               >
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
               </button>
-              <a href="#contact">
-              <InteractiveHoverButton>Contact</InteractiveHoverButton>
+              <a href="#contact" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.querySelector("#contact").scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  <InteractiveHoverButton>Contact</InteractiveHoverButton>
               </a>
             </div>
           </div>
