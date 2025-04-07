@@ -7,6 +7,7 @@ import blog from './assets/images/blog.png';
 import nitya from './assets/images/nitya.jpeg';
 import bird from './assets/images/bird.png';
 import { InteractiveHoverButton } from "../src/component/button.jsx";
+import Contact from './component/contact';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -68,8 +69,13 @@ function App() {
               >
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
               </button>
-              <a href="#contact">
-              <InteractiveHoverButton>Contact</InteractiveHoverButton>
+              <a href="#contact" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.querySelector("#contact").scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  <InteractiveHoverButton>Contact</InteractiveHoverButton>
               </a>
             </div>
           </div>
@@ -205,22 +211,8 @@ function App() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-20 px-4" id="contact">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-8">Let's Work Together</h2>
-          <p className={`text-xl mb-12 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-            I'm always open to discussing new projects and opportunities.
-          </p>
-          <a
-            href="mailto:nitya@curiouscoder.live"
-            className={`inline-flex items-center px-6 py-3 rounded-lg ${
-              darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'
-            } text-white transition-colors`}
-          >
-            Get in Touch
-            <Mail className="ml-2 w-5 h-5" />
-          </a>
-        </div>
+      <section id="contact" className={`py-20 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+        <Contact isdarkMode={darkMode} />
       </section>
 
       {/* Footer */}
