@@ -1,20 +1,21 @@
 # Portfolio Website
 
-A modern portfolio website built with React, featuring a contact form that sends emails through Microsoft Exchange/Office 365.
+A modern portfolio website built with React, featuring a contact form that sends emails through Gmail SMTP.
 
 ## Features
 
 - Modern, responsive design
 - Dark/Light mode support
-- Contact form with email integration
+- Contact form with Gmail SMTP integration
 - Serverless deployment on Netlify
-- Microsoft Exchange/Office 365 email integration
+- Rate limiting for form submissions
+- Input validation and error handling
 
 ## Prerequisites
 
 - Node.js (v14 or higher)
 - npm or yarn
-- Microsoft Exchange/Office 365 account
+- Gmail account with 2-Step Verification enabled
 - Netlify account (for deployment)
 
 ## Installation
@@ -34,36 +35,29 @@ npm install
    - Copy `.env.example` to `.env`
    - Update the following variables:
      ```
-     EMAIL_USER=your-email@yourdomain.com
-     EMAIL_PASS=your-password-or-app-password
+     EMAIL_USER=your-gmail@gmail.com
+     EMAIL_PASS=your-16-character-app-password
      ```
 
-### Microsoft Exchange/Office 365 Setup
+### Gmail SMTP Setup
 
-1. **Email Credentials**:
-   - Use your Exchange/Office 365 email address
-   - For the password:
-     - If you don't have 2FA enabled: Use your regular password
-     - If you have 2FA enabled: Create an app password
-       - Go to account.microsoft.com/security
-       - Select "Security" > "Advanced security options" > "App passwords"
-       - Create a new app password for "Mail"
+1. **Enable 2-Step Verification**:
+   - Go to your Google Account settings
+   - Navigate to Security
+   - Enable 2-Step Verification if not already enabled
 
-2. **Exchange Online Specific Settings**:
-   - If you're using Exchange Online, you might need to:
-     - Use your regular password instead of an app password
-     - Enable "Less secure app access" in your Microsoft account
-     - Or create an app password specifically for this application
+2. **Generate App Password**:
+   - Go to your Google Account settings
+   - Navigate to Security
+   - Go to App Passwords
+   - Select "Mail" and your device
+   - Copy the 16-character password generated
 
-3. **Troubleshooting Exchange/Office 365**:
-   - If emails aren't sending, check:
-     - Your Exchange/Office 365 account settings
-     - Any security policies in your organization
-     - Whether your account has SMTP sending permissions
-   - Common Exchange-specific issues:
-     - TLS/SSL certificate validation
-     - Organization security policies
-     - SMTP sending restrictions
+3. **SMTP Settings**:
+   - Server: smtp.gmail.com
+   - Port: 587
+   - Encryption: STARTTLS
+   - Authentication: Required
 
 ## Development
 
@@ -89,8 +83,8 @@ The website will be available at `http://localhost:5173`
    - Build command: `npm run build`
    - Publish directory: `dist`
 4. Add environment variables in Netlify:
-   - `EMAIL_USER`
-   - `EMAIL_PASS`
+   - `EMAIL_USER`: Your Gmail address
+   - `EMAIL_PASS`: Your 16-character App Password
 
 ### Backend Deployment (Netlify Functions)
 
@@ -102,12 +96,39 @@ Create a `.env` file in the root directory with the following variables:
 
 ```env
 # Email Configuration
-EMAIL_USER=your-email@yourdomain.com
-EMAIL_PASS=your-password-or-app-password
+EMAIL_USER=your-gmail@gmail.com
+EMAIL_PASS=your-16-character-app-password
 
 # Server Configuration
 PORT=3000
 ```
+
+## Security Features
+
+- Rate limiting: 5 requests per 15 minutes per IP
+- Input validation for all form fields
+- Email format validation
+- Message length validation (minimum 10 characters)
+- CORS protection
+- Secure SMTP connection with STARTTLS
+
+## Troubleshooting
+
+### Common Gmail SMTP Issues
+
+1. **Authentication Failed**:
+   - Ensure 2-Step Verification is enabled
+   - Verify your App Password is correct
+   - Check if your Gmail account has "Less secure app access" enabled
+
+2. **Connection Issues**:
+   - Verify your internet connection
+   - Check if port 587 is not blocked by your firewall
+   - Ensure you're using the correct SMTP settings
+
+3. **Rate Limiting**:
+   - The form is limited to 5 submissions per 15 minutes per IP
+   - Wait for the rate limit window to reset
 
 ## Contributing
 
