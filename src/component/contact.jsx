@@ -19,90 +19,70 @@ const Contact = ({ isdarkMode }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Basic validation
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
-      setNotification({
-        open: true,
-        message: 'Please fill in all fields',
-        severity: 'error'
-      });
-      return;
-    }
-    
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setNotification({
-        open: true,
-        message: 'Please enter a valid email address',
-        severity: 'error'
-      });
-      return;
-    }
-    
-    // Message length validation
-    if (formData.message.trim().length < 10) {
-      setNotification({
-        open: true,
-        message: 'Message must be at least 10 characters long',
-        severity: 'error'
-      });
-      return;
-    }
-    
     setIsSubmitting(true);
-    
+    setNotification({
+      open: false,
+      message: '',
+      severity: 'success'
+    });
+
     try {
-      // Determine the API URL based on the environment
-      let apiUrl;
-      
-      if (import.meta.env.PROD) {
-        // In production (Netlify)
-        apiUrl = '/.netlify/functions/contact';
-      } else {
-        // In development
-        // Check if we're using the proxy or need the full URL
-        const isProxyConfigured = import.meta.env.VITE_USE_PROXY === 'true';
-        apiUrl = isProxyConfigured ? '/api/contact' : 'http://localhost:3000/api/contact';
+      // Validate form data
+      if (!formData.name || !formData.email || !formData.message) {
+        setNotification({
+          open: true,
+          message: 'Please fill in all fields',
+          severity: 'error'
+        });
+        setIsSubmitting(false);
+        return;
       }
-      
-      console.log('Sending request to:', apiUrl);
-      
-      const response = await fetch(apiUrl, {
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        setNotification({
+          open: true,
+          message: 'Please enter a valid email address',
+          severity: 'error'
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (formData.message.length < 10) {
+        setNotification({
+          open: true,
+          message: 'Message must be at least 10 characters long',
+          severity: 'error'
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      const response = await fetch('/.netlify/functions/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
-      
-      // Check if the response is OK before trying to parse JSON
+
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(data.error || 'Failed to send message');
       }
-      
-      // Try to parse the JSON response
-      let data;
-      try {
-        data = await response.json();
-      } catch (jsonError) {
-        console.error('Error parsing JSON:', jsonError);
-        throw new Error('Invalid JSON response from server');
-      }
-      
+
       setNotification({
         open: true,
         message: data.message || 'Message sent successfully! I\'ll get back to you soon.',
         severity: 'success'
       });
-      // Reset form
       setFormData({ name: '', email: '', message: '' });
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (err) {
+      console.error('Error sending message:', err);
       setNotification({
         open: true,
-        message: error.message || 'Network error. Please check your connection and try again.',
+        message: err.message || 'Failed to send message. Please try again.',
         severity: 'error'
       });
     } finally {
