@@ -82,7 +82,7 @@ function App() {
       </nav>
 
       {/* Hero Section */}
-      <section className={`pt-32 pb-20 px-4 relative overflow-hidden ${darkMode ? 'bg-gray-800' : ''}`}>
+      <section className={`min-h-screen flex items-center relative overflow-hidden ${darkMode ? 'bg-gray-800' : ''}`}>
         {/* Gradient Background */}
         <div className={`absolute inset-0 ${darkMode ? 'bg-gradient-to-br from-gray-800 via-gray-900 to-gray-800' : 'bg-gradient-to-br from-blue-50/80 via-purple-50/80 to-pink-50/80'}`}></div>
         
@@ -121,41 +121,49 @@ function App() {
         <div className={`absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000 ${darkMode ? 'hidden' : ''}`}></div>
         
         {/* Content */}
-        <div className={`relative max-w-4xl mx-auto ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} transition-all duration-1000`}>
-          <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
-            <div className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-blue-500 shadow-xl transform hover:scale-105 transition-transform duration-300 mx-auto md:mx-0">
-              <img 
-                src={nitya}
-                alt="Profile" 
-                className="w-full h-full object-cover"
-                onError={(e) => e.target.src = 'https://placehold.co/400x400/png'}
-              />
+        <div className={`relative w-full px-4 pt-24 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} transition-all duration-1000`}>
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
+              <div className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-blue-500 shadow-xl transform hover:scale-105 transition-transform duration-300 mx-auto md:mx-0">
+                <img 
+                  src={nitya}
+                  alt="Profile" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => e.target.src = 'https://placehold.co/400x400/png'}
+                />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h1 className="text-4xl md:text-6xl font-bold mb-6 font-playfair">
+                  NITYA JAIN
+                </h1>
+                <h2 className="text-2xl md:text-3xl font-light italic mb-6 font-poppins">
+                  Passionate programmer, Aspiring Full Stack Developer and Game developer
+                </h2>
+                <p className="text-xl md:text-2xl mb-8 font-poppins">
+                  Passionate programmer who loves building websites, apps, and games. Aspiring full-stack and game developer, eager to create innovative and user-friendly projects.
+                </p>
+              </div>
             </div>
-            <div className="flex-1 text-center md:text-left">
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 font-playfair">
-                NITYA JAIN
-              </h1>
-              <h2 className="text-2xl md:text-3xl font-light italic mb-6 font-poppins">
-                Passionate programmer, Aspiring Full Stack Developer and Game developer
-              </h2>
-              <p className="text-xl md:text-2xl mb-8 font-poppins">
-                Passionate programmer who loves building websites, apps, and games. Aspiring full-stack and game developer, eager to create innovative and user-friendly projects.
-              </p>
+            <div className="flex space-x-4 justify-center md:justify-start">
+              <a href="https://github.com/curiouscoder-cmd" target="_blank" rel="noopener noreferrer">
+                <Github className="w-6 h-6 hover:text-blue-500 transition-colors" />
+              </a>
+              <a href="https://www.linkedin.com/in/nitya-jain-007908316/" target="_blank" rel="noopener noreferrer">
+                <Linkedin className="w-6 h-6 hover:text-blue-500 transition-colors" />
+              </a>
+              <a href="mailto:nitya@curiouscoder.live">
+                <Mail className="w-6 h-6 hover:text-blue-500 transition-colors" />
+              </a>
             </div>
-          </div>
-          <div className="flex space-x-4 justify-center md:justify-start">
-            <a href="https://github.com/curiouscoder-cmd" target="_blank" rel="noopener noreferrer">
-              <Github className="w-6 h-6 hover:text-blue-500 transition-colors" />
-            </a>
-            <a href="https://www.linkedin.com/in/nitya-jain-007908316/" target="_blank" rel="noopener noreferrer">
-              <Linkedin className="w-6 h-6 hover:text-blue-500 transition-colors" />
-            </a>
-            <a href="mailto:nitya@curiouscoder.live">
-              <Mail className="w-6 h-6 hover:text-blue-500 transition-colors" />
-            </a>
-          </div>
-          <div className="mt-16 flex justify-center">
-            <ChevronDown className="w-8 h-8 animate-bounce" />
+            <div className="mt-16 flex justify-center">
+              <a 
+                href="#projects" 
+                className="cursor-pointer hover:text-blue-500 transition-colors"
+                aria-label="Scroll to Projects"
+              >
+                <ChevronDown className="w-8 h-8 animate-bounce" />
+              </a>
+            </div>
           </div>
         </div>
       </section>
