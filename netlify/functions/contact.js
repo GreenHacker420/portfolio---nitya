@@ -1,6 +1,11 @@
 // Netlify serverless function for contact form
 const nodemailer = require('nodemailer');
 
+// Log environment variables status
+console.log('Environment Variables Status:');
+console.log('EMAIL_USER:', process.env.EMAIL_USER ? '✅ Loaded' : '❌ Not loaded');
+console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? '✅ Loaded' : '❌ Not loaded');
+
 // Create a transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -12,10 +17,23 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+// Verify transporter configuration
+transporter.verify(function(error, success) {
+  if (error) {
+    console.error('SMTP Configuration Error:', error);
+    console.error('SMTP Auth Details:', {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS ? 'Set' : 'Not Set'
+    });
+  } else {
+    console.log('SMTP Server is ready to send messages');
+  }
+});
+
 // Rate limiting implementation
 const rateLimit = {
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 requests per windowMs
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
   store: new Map(),
   
   // Check if the request should be rate limited
@@ -53,11 +71,15 @@ const rateLimit = {
 
 // Handler for the serverless function
 exports.handler = async function(event, context) {
-  // Log the incoming request
-  console.log('Received request:', event.body);
+  console.log('Function started');
+  console.log('Environment variables:', {
+    EMAIL_USER: process.env.EMAIL_USER ? 'Set' : 'Not Set',
+    EMAIL_PASS: process.env.EMAIL_PASS ? 'Set' : 'Not Set'
+  });
 
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
+    console.log('Method not allowed:', event.httpMethod);
     return {
       statusCode: 405,
       body: JSON.stringify({ error: 'Method not allowed' })
@@ -69,23 +91,27 @@ exports.handler = async function(event, context) {
                   event.headers['x-forwarded-for'] || 
                   'unknown';
   
+  console.log('Client IP:', clientIP);
+  
   // Check rate limit
   if (rateLimit.isRateLimited(clientIP)) {
+    console.log('Rate limit exceeded for IP:', clientIP);
     return {
       statusCode: 429,
       body: JSON.stringify({ 
         error: 'Too many requests',
-        message: 'Too many requests, please try again later.'
+        message: 'Please wait a few minutes before trying again.'
       })
     };
   }
   
   try {
-    // Parse the request body
+    console.log('Request body:', event.body);
     const { name, email, message } = JSON.parse(event.body);
     
     // Validate input
     if (!name || !email || !message) {
+      console.log('Missing required fields');
       return {
         statusCode: 400,
         body: JSON.stringify({ error: 'Missing required fields' })
@@ -95,6 +121,7 @@ exports.handler = async function(event, context) {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log('Invalid email format:', email);
       return {
         statusCode: 400,
         body: JSON.stringify({ error: 'Invalid email format' })
@@ -103,11 +130,14 @@ exports.handler = async function(event, context) {
     
     // Validate message length
     if (message.length < 10) {
+      console.log('Message too short');
       return {
         statusCode: 400,
         body: JSON.stringify({ error: 'Message must be at least 10 characters long' })
       };
     }
+    
+    console.log('Sending emails...');
     
     // Send email to admin
     const adminMailOptions = {
@@ -115,11 +145,11 @@ exports.handler = async function(event, context) {
       to: `nitya@curiouscoder.live`, // Send to yourself
       subject: `New Contact Form Submission from ${name}`,
       text: `
-        Name: ${name}
-        Email: ${email}
-        Message: ${message}
+Name: ${name}
+Email: ${email}
+Message: ${message}
       `,
-      replyTo: email // Set reply-to header to sender's email
+      replyTo: email
     };
 
     // Send thank you email to the person who submitted the form
@@ -128,48 +158,52 @@ exports.handler = async function(event, context) {
       to: email,
       subject: 'Thank you for contacting me',
       text: `
-        Dear ${name},
+Dear ${name},
 
-        Thank you for reaching out to me through my portfolio website. I have received your message and will get back to you as soon as possible.
+Thank you for reaching out to me through my portfolio website. I have received your message and will get back to you as soon as possible.
 
-        Best regards,
-        Nitya Jain
+Best regards,
+Nitya
       `,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h2 style="color: #4f46e5;">Thank you for contacting me</h2>
-          <p>Dear ${name},</p>
-          <p>Thank you for reaching out to me through my portfolio website. I have received your message and will get back to you as soon as possible.</p>
-          <p>Best regards,<br>Nitya</p>
-        </div>
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <h2 style="color: #4f46e5;">Thank you for contacting me</h2>
+  <p>Dear ${name},</p>
+  <p>Thank you for reaching out to me through my portfolio website. I have received your message and will get back to you as soon as possible.</p>
+  <p>Best regards,<br>Nitya</p>
+</div>
       `
     };
 
     // Log email options (excluding sensitive data)
-    // console.log('Sending admin email to:', process.env.EMAIL_USER);
-    // console.log('Sending thank you email to:', email);
+    console.log('Sending admin email to:', process.env.EMAIL_USER);
+    console.log('Sending thank you email to:', email);
 
     // Send both emails
-    const adminInfo = await transporter.sendMail(adminMailOptions);
-    const thankYouInfo = await transporter.sendMail(thankYouMailOptions);
+    const [adminInfo, thankYouInfo] = await Promise.all([
+      transporter.sendMail(adminMailOptions),
+      transporter.sendMail(thankYouMailOptions)
+    ]);
     
-    // console.log('Admin email sent successfully:', adminInfo.messageId);
-    // console.log('Thank you email sent successfully:', thankYouInfo.messageId);
+    console.log('Admin email sent:', adminInfo.messageId);
+    console.log('Thank you email sent:', thankYouInfo.messageId);
 
     return {
       statusCode: 200,
       body: JSON.stringify({ message: 'Email sent successfully' })
     };
   } catch (error) {
-    // Log the error
-    console.error('Error sending email:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      code: error.code
+    });
 
-    // Return appropriate error response
     return {
       statusCode: 500,
       body: JSON.stringify({ 
         error: 'Failed to send email',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? error.message : 'An error occurred while sending the email'
       })
     };
   }
