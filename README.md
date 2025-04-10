@@ -61,21 +61,16 @@ npm install
 
 ## Development
 
-1. Start the development server:
+Start the development server:
 ```bash
 npm run dev
-```
-
-2. Start the backend server:
-```bash
-npm run server
 ```
 
 The website will be available at `http://localhost:5173`
 
 ## Deployment
 
-### Frontend Deployment (Netlify)
+### Netlify Deployment
 
 1. Push your code to GitHub
 2. Connect your repository to Netlify
@@ -86,9 +81,14 @@ The website will be available at `http://localhost:5173`
    - `EMAIL_USER`: Your Gmail address
    - `EMAIL_PASS`: Your 16-character App Password
 
-### Backend Deployment (Netlify Functions)
+### Netlify Functions
 
-The backend is deployed as Netlify Functions. No additional configuration is needed beyond setting the environment variables in your Netlify dashboard.
+The contact form functionality is handled by a Netlify Function located in `netlify/functions/contact.js`. This function:
+- Handles form submissions
+- Validates input
+- Implements rate limiting
+- Sends emails via Gmail SMTP
+- Sends thank you emails to users
 
 ## Environment Variables
 
@@ -99,8 +99,10 @@ Create a `.env` file in the root directory with the following variables:
 EMAIL_USER=your-gmail@gmail.com
 EMAIL_PASS=your-16-character-app-password
 
-# Server Configuration
-PORT=3000
+# SMTP Settings (Gmail)
+# Server: smtp.gmail.com
+# Port: 587
+# Encryption: STARTTLS
 ```
 
 ## Security Features
@@ -109,7 +111,6 @@ PORT=3000
 - Input validation for all form fields
 - Email format validation
 - Message length validation (minimum 10 characters)
-- CORS protection
 - Secure SMTP connection with STARTTLS
 
 ## Troubleshooting

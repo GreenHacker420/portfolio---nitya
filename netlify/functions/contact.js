@@ -1,12 +1,6 @@
 // Netlify serverless function for contact form
 const nodemailer = require('nodemailer');
 
-// Validate email format
-const isValidEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
 // Create a transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -58,7 +52,10 @@ const rateLimit = {
 };
 
 // Handler for the serverless function
-exports.handler = async (event, context) => {
+exports.handler = async function(event, context) {
+  // Log the incoming request
+  console.log('Received request:', event.body);
+
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {
@@ -91,21 +88,16 @@ exports.handler = async (event, context) => {
     if (!name || !email || !message) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ 
-          error: 'Missing required fields',
-          message: 'Please provide name, email, and message'
-        })
+        body: JSON.stringify({ error: 'Missing required fields' })
       };
     }
     
     // Validate email format
-    if (!isValidEmail(email)) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ 
-          error: 'Invalid email format',
-          message: 'Please provide a valid email address'
-        })
+        body: JSON.stringify({ error: 'Invalid email format' })
       };
     }
     
@@ -113,64 +105,71 @@ exports.handler = async (event, context) => {
     if (message.length < 10) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ 
-          error: 'Message too short',
-          message: 'Please provide a message with at least 10 characters'
-        })
+        body: JSON.stringify({ error: 'Message must be at least 10 characters long' })
       };
     }
     
-    // Email content
-    const mailOptions = {
+    // Send email to admin
+    const adminMailOptions = {
       from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER, // Send to yourself
-      replyTo: email, // Allow direct reply to the sender
+      to: `nitya@curiouscoder.live`, // Send to yourself
       subject: `New Contact Form Submission from ${name}`,
       text: `
         Name: ${name}
         Email: ${email}
         Message: ${message}
       `,
+      replyTo: email // Set reply-to header to sender's email
+    };
+
+    // Send thank you email to the person who submitted the form
+    const thankYouMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Thank you for contacting me',
+      text: `
+        Dear ${name},
+
+        Thank you for reaching out to me through my portfolio website. I have received your message and will get back to you as soon as possible.
+
+        Best regards,
+        Nitya Jain
+      `,
       html: `
-        <h3>New Contact Form Submission</h3>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong> ${message}</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #4f46e5;">Thank you for contacting me</h2>
+          <p>Dear ${name},</p>
+          <p>Thank you for reaching out to me through my portfolio website. I have received your message and will get back to you as soon as possible.</p>
+          <p>Best regards,<br>Nitya</p>
+        </div>
       `
     };
+
+    // Log email options (excluding sensitive data)
+    // console.log('Sending admin email to:', process.env.EMAIL_USER);
+    // console.log('Sending thank you email to:', email);
+
+    // Send both emails
+    const adminInfo = await transporter.sendMail(adminMailOptions);
+    const thankYouInfo = await transporter.sendMail(thankYouMailOptions);
     
-    // Send email
-    await transporter.sendMail(mailOptions);
-    
-    // Log successful submission
-    console.log(`Contact form submission received from ${name} (${email})`);
-    
+    // console.log('Admin email sent successfully:', adminInfo.messageId);
+    // console.log('Thank you email sent successfully:', thankYouInfo.messageId);
+
     return {
       statusCode: 200,
-      body: JSON.stringify({ 
-        success: true,
-        message: 'Email sent successfully' 
-      })
+      body: JSON.stringify({ message: 'Email sent successfully' })
     };
   } catch (error) {
+    // Log the error
     console.error('Error sending email:', error);
-    
-    // Provide more specific error messages
-    if (error.code === 'EAUTH') {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ 
-          error: 'Authentication failed',
-          message: 'Email service authentication failed. Please check your credentials.'
-        })
-      };
-    }
-    
+
+    // Return appropriate error response
     return {
       statusCode: 500,
       body: JSON.stringify({ 
         error: 'Failed to send email',
-        message: 'An error occurred while sending your message. Please try again later.'
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
       })
     };
   }
