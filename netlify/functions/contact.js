@@ -85,23 +85,23 @@ exports.handler = async function (event) {
     }
 
     // Send message to you
-    const mailToOwner = {
-      from: `Portfolio Contact <${process.env.EMAIL_USER}>`,
+    const mailOptions = {
+      from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
       to: 'nitya@curiouscoder.live',
       subject: `New Contact Form Message from ${name}`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h2 style="color: #4f46e5;">New Contact Form Message</h2>
-          <p><strong>From:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Message:</strong></p>
-          <p style="white-space: pre-wrap;">${message}</p>
-        </div>
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <h2 style="color: #4f46e5;">New Contact Form Message</h2>
+  <p><strong>From:</strong> ${name}</p>
+  <p><strong>Email:</strong> ${email}</p>
+  <p><strong>Message:</strong></p>
+  <p style="white-space: pre-wrap;">${message}</p>
+</div>
       `,
       replyTo: email
     };
 
-    await transporter.sendMail(mailToOwner);
+    await transporter.sendMail(mailOptions);
 
     // Send thank-you email to user
     const thankYouMail = {
@@ -111,7 +111,7 @@ exports.handler = async function (event) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h2 style="color: #4f46e5;">Thank You, ${name}!</h2>
-          <p>I’ve received your message and will get back to you shortly.</p>
+          <p>I've received your message and will get back to you shortly.</p>
           <hr>
           <h4>Your Submission:</h4>
           <p><strong>Name:</strong> ${name}</p>
