@@ -1,10 +1,17 @@
 // Netlify serverless function for contact form
 const nodemailer = require('nodemailer');
 
-// Log environment variables status
-console.log('Environment Variables Status:');
+// Detailed environment variable logging
+console.log('=== Environment Variables Check ===');
 console.log('EMAIL_USER:', process.env.EMAIL_USER ? '✅ Loaded' : '❌ Not loaded');
+if (process.env.EMAIL_USER) {
+  console.log('EMAIL_USER value:', process.env.EMAIL_USER);
+}
 console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? '✅ Loaded' : '❌ Not loaded');
+if (process.env.EMAIL_PASS) {
+  console.log('EMAIL_PASS value:', '********' + process.env.EMAIL_PASS.slice(-4));
+}
+console.log('================================');
 
 // Create a transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
@@ -36,7 +43,6 @@ const rateLimit = {
   max: 10, // limit each IP to 10 requests per windowMs
   store: new Map(),
   
-  // Check if the request should be rate limited
   isRateLimited: function(ip) {
     const now = Date.now();
     const windowStart = now - this.windowMs;
@@ -69,7 +75,6 @@ const rateLimit = {
   }
 };
 
-// Handler for the serverless function
 exports.handler = async function(event, context) {
   console.log('Function started');
   console.log('Environment variables:', {
@@ -85,7 +90,7 @@ exports.handler = async function(event, context) {
       body: JSON.stringify({ error: 'Method not allowed' })
     };
   }
-  
+
   // Get client IP for rate limiting
   const clientIP = event.headers['client-ip'] || 
                   event.headers['x-forwarded-for'] || 
@@ -104,7 +109,7 @@ exports.handler = async function(event, context) {
       })
     };
   }
-  
+
   try {
     console.log('Request body:', event.body);
     const { name, email, message } = JSON.parse(event.body);
@@ -136,13 +141,13 @@ exports.handler = async function(event, context) {
         body: JSON.stringify({ error: 'Message must be at least 10 characters long' })
       };
     }
-    
+
     console.log('Sending emails...');
     
-    // Send email to admin
+    // Send email to nitya@curiouscoder.live
     const adminMailOptions = {
       from: process.env.EMAIL_USER,
-      to: `nitya@curiouscoder.live`, // Send to yourself
+      to: 'nitya@curiouscoder.live',
       subject: `New Contact Form Submission from ${name}`,
       text: `
 Name: ${name}
@@ -176,7 +181,7 @@ Nitya
     };
 
     // Log email options (excluding sensitive data)
-    console.log('Sending admin email to:', process.env.EMAIL_USER);
+    console.log('Sending admin email to: nitya@curiouscoder.live');
     console.log('Sending thank you email to:', email);
 
     // Send both emails
@@ -196,8 +201,16 @@ Nitya
     console.error('Error details:', {
       message: error.message,
       stack: error.stack,
-      code: error.code
+      code: error.code,
+      name: error.name
     });
+
+    // Check for specific error types
+    if (error.code === 'EAUTH') {
+      console.error('Authentication Error: Check your Gmail credentials');
+    } else if (error.code === 'ECONNECTION') {
+      console.error('Connection Error: Check your internet connection or SMTP settings');
+    }
 
     return {
       statusCode: 500,
@@ -207,4 +220,4 @@ Nitya
       })
     };
   }
-}; 
+};

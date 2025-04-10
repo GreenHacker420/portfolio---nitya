@@ -1,7 +1,11 @@
 // Netlify serverless function for health check
-exports.handler = async (event, context) => {
+exports.handler = async function(event, context) {
   return {
     statusCode: 200,
-    body: JSON.stringify({ status: 'ok' })
+    body: JSON.stringify({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development'
+    })
   };
 }; 
