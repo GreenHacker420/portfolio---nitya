@@ -14,48 +14,24 @@ const Contact = ({ isdarkMode }) => {
   const [notification, setNotification] = useState({
     open: false,
     message: '',
-    severity: 'success' // 'success', 'error', 'info', 'warning'
+    severity: 'success'
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setNotification({
-      open: false,
-      message: '',
-      severity: 'success'
-    });
 
     try {
-      // Validate form data
       if (!formData.name || !formData.email || !formData.message) {
-        setNotification({
-          open: true,
-          message: 'Please fill in all fields',
-          severity: 'error'
-        });
-        setIsSubmitting(false);
-        return;
+        throw new Error('Please fill in all fields');
       }
 
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        setNotification({
-          open: true,
-          message: 'Please enter a valid email address',
-          severity: 'error'
-        });
-        setIsSubmitting(false);
-        return;
+        throw new Error('Please enter a valid email address');
       }
 
       if (formData.message.length < 10) {
-        setNotification({
-          open: true,
-          message: 'Message must be at least 10 characters long',
-          severity: 'error'
-        });
-        setIsSubmitting(false);
-        return;
+        throw new Error('Message must be at least 10 characters long');
       }
 
       const response = await fetch('/.netlify/functions/contact', {
@@ -74,12 +50,11 @@ const Contact = ({ isdarkMode }) => {
 
       setNotification({
         open: true,
-        message: data.message || 'Message sent successfully! I\'ll get back to you soon.',
+        message: 'Message sent successfully! I\'ll get back to you soon.',
         severity: 'success'
       });
       setFormData({ name: '', email: '', message: '' });
     } catch (err) {
-      console.error('Error sending message:', err);
       setNotification({
         open: true,
         message: err.message || 'Failed to send message. Please try again.',
@@ -98,10 +73,7 @@ const Contact = ({ isdarkMode }) => {
   };
   
   const handleCloseNotification = () => {
-    setNotification({
-      ...notification,
-      open: false
-    });
+    setNotification(prev => ({ ...prev, open: false }));
   };
 
   return (
