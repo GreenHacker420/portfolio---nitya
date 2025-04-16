@@ -6,6 +6,7 @@ import game from './assets/images/game.png';
 import blog from './assets/images/blog.png';
 import nitya from './assets/images/nitya.jpeg';
 import bird from './assets/images/bird.png';
+import Text from './assets/images/Text.png';
 import { InteractiveHoverButton } from "../src/component/button.jsx";
 import Contact from './component/contact';
 
@@ -52,7 +53,15 @@ function App() {
       image: bird,
       tags: ["React", "javascript", "CSS"],
       link: "https://flappybirdgame2025.netlify.app/"
+    },
+    {
+      title: "Text Formatter",
+      description: "A simple website created using React and js, enable to format text  Check it out!",
+      image: Text,
+      tags: ["React", "javascript", "BootStrap"],
+      link: "https://nityavitereactpractice.netlify.app/"
     }
+
   ];
 
   return (
