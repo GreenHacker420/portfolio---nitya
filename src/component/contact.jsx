@@ -101,12 +101,6 @@ const Contact = ({ isdarkMode }) => {
                                     href="mailto:nitya@curiouscoder.live"
                                     className={`leading-relaxed break-all ${isdarkMode ? 'text-indigo-500 hover:text-indigo-400' : 'text-indigo-600 hover:text-indigo-800'}`}
                             >nitya@curiouscoder.live</a>
-
-                            <h2 className={`title-font font-semibold tracking-widest text-xs mt-4 ${isdarkMode ? 'text-white' : 'text-gray-900'}`}>PHONE</h2>
-                            <a
-                                    href="tel:+918349080250"
-                                    className={`leading-relaxed ${isdarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-black'}`}
-                            >+91 8349080250</a>
                     </div>
 
                 </div>
