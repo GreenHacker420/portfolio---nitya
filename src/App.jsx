@@ -4,7 +4,7 @@ import grwmImage from './assets/images/grwm.png';
 import login from './assets/images/login.png';
 import game from './assets/images/game.png';
 import blog from './assets/images/blog.png';
-import nitya from './assets/images/nitya.jpeg';
+import me from './assets/images/me>jpeg';
 import bird from './assets/images/bird.png';
 import Text from './assets/images/Text.png';
 import { InteractiveHoverButton } from "../src/component/button.jsx";
