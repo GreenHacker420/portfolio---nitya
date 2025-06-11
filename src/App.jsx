@@ -4,7 +4,7 @@ import grwmImage from './assets/images/grwm.png';
 import login from './assets/images/login.png';
 import game from './assets/images/game.png';
 import blog from './assets/images/blog.png';
-import me from './assets/images/me>jpeg';
+import me from './assets/images/me.jpeg';
 import bird from './assets/images/bird.png';
 import Text from './assets/images/Text.png';
 import { InteractiveHoverButton } from "../src/component/button.jsx";
@@ -136,7 +136,7 @@ function App() {
             <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
               <div className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-blue-500 shadow-xl transform hover:scale-105 transition-transform duration-300 mx-auto md:mx-0">
                 <img 
-                  src={nitya}
+                  src={me}
                   alt="Profile" 
                   className="w-full h-full object-cover"
                   onError={(e) => e.target.src = 'https://placehold.co/400x400/png'}
