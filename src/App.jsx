@@ -7,7 +7,7 @@ import blog from './assets/images/blog.png';
 import me from './assets/images/me.jpeg';
 import bird from './assets/images/bird.png';
 import Text from './assets/images/Text.png';
-import { InteractiveHoverButton } from "../src/component/button.jsx";
+import { InteractiveHoverButton } from "./component/button.jsx";
 import Contact from './component/contact';
 
 function App() {
@@ -147,6 +147,7 @@ function App() {
                   alt="Profile" 
                   className="w-full h-full object-cover"
                   onError={handleImageError}
+                  loading="eager"
                 />
               </div>
               <div className="flex-1 text-center md:text-left">

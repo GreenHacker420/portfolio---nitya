@@ -5,23 +5,12 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
-    host: true,
-    open: true
+    host: true
   },
   build: {
-    sourcemap: true,
     outDir: 'dist',
-    assetsDir: 'assets',
-    rollupOptions: {
-      output: {
-        manualChunks: undefined
-      }
-    }
+    assetsDir: 'assets'
   },
-  optimizeDeps: {
-    include: ['react', 'react-dom']
-  },
-  assetsInclude: ['**/*.jpeg', '**/*.jpg', '**/*.png', '**/*.gif'],
   resolve: {
     alias: {
       '@': '/src'
