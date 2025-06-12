@@ -13,11 +13,17 @@ import Contact from './component/contact';
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
-    console.log('Profile image path:', me);
   }, []);
+
+  const handleImageError = (e) => {
+    console.error('Error loading image:', e);
+    setImageError(true);
+    e.target.src = 'https://placehold.co/400x400/png';
+  };
 
   const projects = [
     {
@@ -137,10 +143,10 @@ function App() {
             <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
               <div className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-blue-500 shadow-xl transform hover:scale-105 transition-transform duration-300 mx-auto md:mx-0">
                 <img 
-                  src={me}
+                  src={imageError ? 'https://placehold.co/400x400/png' : me}
                   alt="Profile" 
                   className="w-full h-full object-cover"
-                  onError={(e) => e.target.src = 'https://placehold.co/400x400/png'}
+                  onError={handleImageError}
                 />
               </div>
               <div className="flex-1 text-center md:text-left">
