@@ -16,6 +16,7 @@ function App() {
 
   useEffect(() => {
     setIsVisible(true);
+    console.log('Profile image path:', me);
   }, []);
 
   const projects = [
