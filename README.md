@@ -1,15 +1,25 @@
 # Portfolio Website
 
-A modern portfolio website built with React, featuring a contact form that sends emails through Gmail SMTP.
+A modern, comprehensive portfolio website built with React, featuring multiple sections to showcase skills, projects, and professional information.
 
-## Features
+## ✨ Features
 
-- Modern, responsive design
-- Dark/Light mode support
-- Contact form with Gmail SMTP integration
-- Serverless deployment on Netlify
-- Rate limiting for form submissions
-- Input validation and error handling
+### Core Features
+- **Modern, responsive design** with mobile-first approach
+- **Dark/Light mode support** with smooth transitions
+- **Multi-section navigation** with smooth scrolling
+- **Contact form** with Gmail SMTP integration
+- **Serverless deployment** on Netlify
+- **Rate limiting** for form submissions
+- **Input validation** and error handling
+
+### New Enhanced Features
+- **Featured Projects Section** - Showcase of most significant projects (Rishabh Electronics, Pizza Dashboard, Drift Run)
+- **All Projects Section** - Complete portfolio of additional projects
+- **Skills Section** - Comprehensive skills showcase with proficiency levels and categories
+- **YouTube Channel Integration** - Dedicated section for video content and channel information
+- **Resume Display** - Modal-based resume viewer with download functionality
+- **Enhanced Navigation** - Desktop and mobile-friendly navigation with all sections
 
 ## Prerequisites
 
@@ -66,7 +76,59 @@ Start the development server:
 npm run dev
 ```
 
-The website will be available at `http://localhost:5173`
+The website will be available at `http://localhost:5173` (or next available port)
+
+## 🎨 Customization
+
+### Projects Configuration
+The portfolio now features two distinct project sections:
+
+**Featured Projects** (`src/App.jsx` - `featuredProjects` array):
+- Rishabh Electronics
+- Pizza Dashboard
+- Drift Run
+
+**Other Projects** (`src/App.jsx` - `otherProjects` array):
+- Get Ready With Me
+- Basic Login Page
+- Blog Website
+- Flappy Bird
+- Text Formatter
+
+### Skills Configuration
+Update your skills in `src/component/Skills.jsx`:
+- Modify skill categories and proficiency levels
+- Add new technologies and tools
+- Customize skill icons and colors
+
+### YouTube Channel Setup
+Configure your YouTube channel in `src/component/YouTube.jsx`:
+1. Update `channelInfo` object with your channel details
+2. Replace `featuredVideos` array with your actual videos
+3. Update channel URL and statistics
+
+### Resume Setup
+To enable the resume feature:
+1. Add your resume PDF to `/public/resume.pdf`
+2. Add a preview image to `/public/resume-preview.jpg`
+3. The component will automatically use these files
+
+## 📁 Project Structure
+
+```
+src/
+├── component/
+│   ├── Skills.jsx          # Skills showcase component
+│   ├── YouTube.jsx         # YouTube channel integration
+│   ├── Resume.jsx          # Resume display and download
+│   ├── contact.jsx         # Contact form component
+│   └── button.jsx          # Interactive button component
+├── assets/
+│   └── images/             # Project images and assets
+├── App.jsx                 # Main application component
+├── main.jsx               # Application entry point
+└── index.css              # Global styles and animations
+```
 
 ## Deployment
 
