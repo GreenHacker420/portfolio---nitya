@@ -1,4 +1,5 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
+import { getContactNotificationTemplate, getThankYouTemplate } from './mailTemplates.js';
 
 // Configure Gmail SMTP transporter
 const transporter = nodemailer.createTransport({
@@ -42,10 +43,26 @@ const rateLimit = {
   }
 };
 
-exports.handler = async function (event) {
+// CORS headers
+const headers = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS'
+};
+
+export const handler = async function (event) {
+  // Handle preflight requests
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers,
+      body: ''
+    };
+  }
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
+      headers,
       body: JSON.stringify({ error: 'Method not allowed' })
     };
   }
@@ -54,6 +71,7 @@ exports.handler = async function (event) {
   if (rateLimit.isRateLimited(clientIP)) {
     return {
       statusCode: 429,
+      headers,
       body: JSON.stringify({ error: 'Too many requests', message: 'Please try again later.' })
     };
   }
@@ -65,6 +83,7 @@ exports.handler = async function (event) {
     if (!name || !email || !message) {
       return {
         statusCode: 400,
+        headers,
         body: JSON.stringify({ error: 'Missing required fields' })
       };
     }
@@ -73,6 +92,7 @@ exports.handler = async function (event) {
     if (!emailRegex.test(email)) {
       return {
         statusCode: 400,
+        headers,
         body: JSON.stringify({ error: 'Invalid email format' })
       };
     }
@@ -80,6 +100,7 @@ exports.handler = async function (event) {
     if (message.length < 10) {
       return {
         statusCode: 400,
+        headers,
         body: JSON.stringify({ error: 'Message must be at least 10 characters long' })
       };
     }
@@ -89,15 +110,7 @@ exports.handler = async function (event) {
       from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
       to: 'nitya@curiouscoder.live',
       subject: `New Contact Form Message from ${name}`,
-      html: `
-<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-  <h2 style="color: #4f46e5;">New Contact Form Message</h2>
-  <p><strong>From:</strong> ${name}</p>
-  <p><strong>Email:</strong> ${email}</p>
-  <p><strong>Message:</strong></p>
-  <p style="white-space: pre-wrap;">${message}</p>
-</div>
-      `,
+      html: getContactNotificationTemplate(name, email, message),
       replyTo: email
     };
 
@@ -105,34 +118,24 @@ exports.handler = async function (event) {
 
     // Send thank-you email to user
     const thankYouMail = {
-      from: `Portfolio Contact <${process.env.EMAIL_USER}>`,
+      from: `"Nitya's Portfolio" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: 'Thank You for Contacting Me!',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h2 style="color: #4f46e5;">Thank You, ${name}!</h2>
-          <p>I've received your message and will get back to you shortly.</p>
-          <hr>
-          <h4>Your Submission:</h4>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Message:</strong></p>
-          <p style="white-space: pre-wrap;">${message}</p>
-          <hr>
-          <p style="font-size: 0.9em; color: #888;">This is an automated confirmation message. You don't need to reply.</p>
-        </div>
-      `
+      subject: 'Thank You for Contacting Me! 🎉',
+      html: getThankYouTemplate(name, message)
     };
 
     await transporter.sendMail(thankYouMail);
 
     return {
       statusCode: 200,
+      headers,
       body: JSON.stringify({ message: 'Message sent successfully!' })
     };
   } catch (error) {
+    console.error('Contact form error:', error);
     return {
       statusCode: 500,
+      headers,
       body: JSON.stringify({ error: 'Failed to send message. Please try again.' })
     };
   }
