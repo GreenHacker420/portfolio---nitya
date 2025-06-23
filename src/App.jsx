@@ -4,9 +4,11 @@ import grwmImage from './assets/images/grwm.png';
 import login from './assets/images/login.png';
 import game from './assets/images/game.png';
 import blog from './assets/images/blog.png';
-import me from './assets/images/me.jpeg';
+import nj from './assets/images/nj.png';
 import bird from './assets/images/bird.png';
 import Text from './assets/images/Text.png';
+import RE from './assets/images/RE.png';
+import pizza from './assets/images/pizza.png';
 import { InteractiveHoverButton } from "./component/button.jsx";
 import Contact from './component/contact';
 
@@ -67,7 +69,22 @@ function App() {
       image: Text,
       tags: ["React", "javascript", "BootStrap"],
       link: "https://nityavitereactpractice.netlify.app/"
+    },
+    {
+      title: "Pizza website",
+      description: "The Pizza Dashboard is a full-featured management system designed specifically for pizza restaurants and delivery services. This application streamlines operations by providing an intuitive interface for managing customers, tracking orders, and scheduling deliveries.",
+      image: pizza,
+      tags: ["React", "javascript", "next"],
+      link: "https://pizza.curiouscoder.live/dashboard/activity"
+    },
+    {
+      title: "Rishabh Electronics",
+      description: "A modern, responsive website for RISHABH ELECTRONICS, a trusted electronics and furniture store located in Baloda Bazar, Raipur, Chhattisgarh. Built with Next.js 14 and featuring beautiful 3D animations, modern UI design, and comprehensive business showcase.",
+      image: RE,
+      tags: ["React", "javascript", "next", "typescript"],
+      link: "https://rishabhelectronics.curiouscoder.live/"
     }
+    
 
   ];
 
@@ -143,7 +160,7 @@ function App() {
             <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
               <div className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-blue-500 shadow-xl transform hover:scale-105 transition-transform duration-300 mx-auto md:mx-0">
                 <img 
-                  src={imageError ? 'https://placehold.co/400x400/png' : me}
+                  src={imageError ? 'https://placehold.co/400x400/png' : nj}
                   alt="Profile" 
                   className="w-full h-full object-cover"
                   onError={handleImageError}
